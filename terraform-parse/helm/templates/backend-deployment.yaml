@@ -19,3 +19,4 @@ spec:
           image: hashicorp/http-echo:latest
           args:
             - "-text=hello"
+            - "-listen=:8080"
