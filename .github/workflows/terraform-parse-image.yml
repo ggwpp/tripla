@@ -1,0 +1,43 @@
+name: Terraform Parse Image
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - terraform-parse/terraform_parse_service/**
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-and-push:    
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Prepare image metadata
+        run: |
+          echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+          echo "IMAGE_NAME=ghcr.io/${GITHUB_REPOSITORY,,}/terraform-parse-service" >> "$GITHUB_ENV"
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: terraform-parse/terraform_parse_service
+          file: terraform-parse/terraform_parse_service/Dockerfile
+          push: true
+          tags: ${{ env.IMAGE_NAME }}:${{ env.SHORT_SHA }}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
