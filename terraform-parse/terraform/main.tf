@@ -42,12 +42,12 @@ module "eks" {
   }
 }
 
-#
-# S3: Not sure if we need S3 creation. I remain s3 part just incase we need it.
-# Technically it is acceptable to use public-acl but not recommened for security and cost reasons
-# Security: accidentlly upload sensitive data to this bucket
+# S3: Not sure if we need S3 creation. I remain on S3 part just in case we need it.
+# Technically it is acceptable to use public ACL, but it is not recommended for security and cost reasons.
+# Security: accidentally upload sensitive data to this bucket
 # Cost: Outbound data transfer without caching
-#
+# ACL is deprecated; the short-term fix is to set the `object_ownership` and disable bucket public access.
+# The static content should be hosted on Cloudfront + S3 for a long-term solution.
 resource "aws_s3_bucket" "static_assets" {
   count  = var.create_s3 ? 1 : 0
   bucket = var.s3_bucket_name
