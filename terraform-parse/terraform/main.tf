@@ -14,22 +14,26 @@ module "eks" {
   version = "19.0.0"
 
   cluster_name    = var.cluster_name
-  cluster_version = "1.25"
+  cluster_version = var.cluster_version
   vpc_id          = var.vpc_id
   subnet_ids      = var.subnet_ids
 
+  cluster_endpoint_private_access      = var.cluster_endpoint_private_access
+  cluster_endpoint_public_access       = var.cluster_endpoint_public_access
+  cluster_endpoint_public_access_cidrs = var.cluster_endpoint_public_access_cidrs
+
   eks_managed_node_group_defaults = {
-    ami_type       = "AL2_x86_64"
-    instance_types = ["t3.medium"]
+    ami_type       = var.eks_node_ami_type
+    instance_types = var.eks_node_instance_types
   }
 
   eks_managed_node_groups = {
-    general = {
-      capacity_type = "SPOT"
+    (var.eks_node_group_name) = {
+      capacity_type = var.eks_node_capacity_type
 
-      min_size     = 1
-      desired_size = 1
-      max_size     = 3
+      min_size     = var.eks_node_min_size
+      desired_size = var.eks_node_desired_size
+      max_size     = var.eks_node_max_size
     }
   }
 
@@ -45,7 +49,7 @@ module "eks" {
 # Cost: Outbound data transfer without caching
 #
 resource "aws_s3_bucket" "static_assets" {
-  count = var.create_s3 ? 1 : 0
+  count  = var.create_s3 ? 1 : 0
   bucket = var.s3_bucket_name
 
   tags = {
