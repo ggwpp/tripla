@@ -1,22 +1,35 @@
-replicaCount: 1
-
 frontend:
   image:
     repository: nginx
     tag: "1.27-alpine"
     pullPolicy: IfNotPresent
+  replicaCount: 1
+  env: []
+  containerPort: 80
   service:
     type: LoadBalancer
     port: 80
+  livenessProbe:
+    path: /
+  readinessProbe:
+    path: /
+  resources: {}
 
 backend:
   image:
-    repository: terraform-parse-service
-    tag: latest
+    repository: ghcr.io/ggwpp/tripla/terraform-parse-service
+    tag: 5bd9e9d
     pullPolicy: IfNotPresent
+  replicaCount: 1
+  env: []
+  containerPort: 3000
   service:
     type: ClusterIP
     port: 3000
+  livenessProbe:
+    path: /healthz
+  readinessProbe:
+    path: /healthz
   resources:
     requests:
       cpu: 50m
@@ -25,4 +38,15 @@ backend:
       cpu: 250m
       memory: 128Mi
 
-resources: {}
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 3
+
+tests:
+  image:
+    repository: curlimages/curl
+    tag: "8.10.1"
+    pullPolicy: IfNotPresent
+  retries: 30
+  retryDelaySeconds: 2
