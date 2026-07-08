@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "tripla-apps.backendLabels" . | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       {{- include "tripla-apps.backendSelectorLabels" . | nindent 6 }}
@@ -16,7 +16,21 @@ spec:
     spec:
       containers:
         - name: backend
-          image: hashicorp/http-echo:latest
-          args:
-            - "-text=hello"
-            - "-listen=:8080"
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+          imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.backend.service.port }}
+          env:
+            - name: PORT
+              value: {{ .Values.backend.service.port | quote }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+          resources:
+            {{- toYaml .Values.backend.resources | nindent 12 }}

@@ -3,17 +3,26 @@ replicaCount: 1
 frontend:
   image:
     repository: nginx
-    tag: latest
+    tag: "1.27-alpine"
+    pullPolicy: IfNotPresent
   service:
     type: LoadBalancer
     port: 80
 
 backend:
   image:
-    repository: hashicorp/http-echo
+    repository: terraform-parse-service
     tag: latest
+    pullPolicy: IfNotPresent
   service:
     type: ClusterIP
-    port: 8080
+    port: 3000
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 250m
+      memory: 128Mi
 
 resources: {}
