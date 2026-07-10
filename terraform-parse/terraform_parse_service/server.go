@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/base64"
 	"fmt"
 	"log"
 	"os"
@@ -11,6 +12,7 @@ import (
 	"text/template"
 
 	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/logger"
 )
 
 const (
@@ -47,8 +49,7 @@ type terraformTemplateData struct {
 }
 
 type renderResponse struct {
-	Filename  string `json:"filename"`
-	Terraform string `json:"terraform"`
+	TerraformBase64 string `json:"terraform_base64"`
 }
 
 type errorResponse struct {
@@ -76,6 +77,8 @@ func newApp(server Server) *fiber.App {
 func (s Server) App() *fiber.App {
 	app := fiber.New()
 
+	app.Use(logger.New())
+
 	app.Get("/healthz", func(c fiber.Ctx) error {
 		return c.JSON(fiber.Map{"status": "ok"})
 	})
@@ -90,40 +93,39 @@ func (s Server) handleTerraform(c fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(errorResponse{Error: "invalid JSON request body"})
 	}
 
-	content, filename, err := s.renderTerraform(req.Payload.Properties)
+	content, err := s.renderTerraform(req.Payload.Properties)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(errorResponse{Error: err.Error()})
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(renderResponse{
-		Filename:  filename,
-		Terraform: content,
+		TerraformBase64: base64.StdEncoding.EncodeToString(content),
 	})
 }
 
-func (s Server) renderTerraform(props terraformProperties) (string, string, error) {
+func (s Server) renderTerraform(props terraformProperties) ([]byte, error) {
 	data := s.buildTemplateData(props)
 
 	tmpl, err := template.ParseFiles(s.templatePath)
 	if err != nil {
-		return "", "", fmt.Errorf("load terraform template: %w", err)
+		return nil, fmt.Errorf("load terraform template: %w", err)
 	}
 
 	var rendered bytes.Buffer
 	if err := tmpl.ExecuteTemplate(&rendered, filepath.Base(s.templatePath), data); err != nil {
-		return "", "", fmt.Errorf("render terraform template: %w", err)
+		return nil, fmt.Errorf("render terraform template: %w", err)
 	}
 
 	if err := os.MkdirAll(s.outputDir, 0o755); err != nil {
-		return "", "", fmt.Errorf("create output directory: %w", err)
+		return nil, fmt.Errorf("create output directory: %w", err)
 	}
 
 	filename := filepath.Join(s.outputDir, data.ResourceName+".tf")
 	if err := os.WriteFile(filename, rendered.Bytes(), 0o644); err != nil {
-		return "", "", fmt.Errorf("write terraform file: %w", err)
+		return nil, fmt.Errorf("write terraform file: %w", err)
 	}
 
-	return rendered.String(), filename, nil
+	return rendered.Bytes(), nil
 }
 
 func (s Server) buildTemplateData(props terraformProperties) terraformTemplateData {
