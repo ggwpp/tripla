@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -10,7 +11,7 @@ import (
 	"testing"
 )
 
-func TestRenderTerraformCreatesFile(t *testing.T) {
+func TestRenderTerraformCreatesFileAndReturnsBase64(t *testing.T) {
 	outputDir := t.TempDir()
 	app := newApp(Server{
 		templatePath: filepath.Join("templates", "s3_bucket.tf.tmpl"),
@@ -42,21 +43,19 @@ func TestRenderTerraformCreatesFile(t *testing.T) {
 		t.Fatalf("decode response: %v", err)
 	}
 
-	expectedFile := filepath.Join(outputDir, "tripla-bucket.tf")
-	if got.Filename != expectedFile {
-		t.Fatalf("expected filename %q, got %q", expectedFile, got.Filename)
-	}
-	assertContains(t, got.Terraform, `provider "aws"`)
-	assertContains(t, got.Terraform, `region = "eu-west-1"`)
-	assertContains(t, got.Terraform, `resource "aws_s3_bucket" "tripla-bucket"`)
-	assertContains(t, got.Terraform, `object_ownership = "BucketOwnerPreferred"`)
-	assertContains(t, got.Terraform, `acl        = "private"`)
+	terraform := decodeTerraformBase64(t, got.TerraformBase64)
+	assertContains(t, terraform, `provider "aws"`)
+	assertContains(t, terraform, `region = "eu-west-1"`)
+	assertContains(t, terraform, `resource "aws_s3_bucket" "tripla-bucket"`)
+	assertContains(t, terraform, `object_ownership = "BucketOwnerPreferred"`)
+	assertContains(t, terraform, `acl        = "private"`)
 
+	expectedFile := filepath.Join(outputDir, "tripla-bucket.tf")
 	written, err := os.ReadFile(expectedFile)
 	if err != nil {
 		t.Fatalf("expected terraform file to be written: %v", err)
 	}
-	if string(written) != got.Terraform {
+	if string(written) != terraform {
 		t.Fatal("written terraform file does not match response body")
 	}
 }
@@ -92,7 +91,8 @@ func TestRenderTerraformUsesRequestedObjectOwnership(t *testing.T) {
 	if err := json.NewDecoder(resp.Body).Decode(&got); err != nil {
 		t.Fatalf("decode response: %v", err)
 	}
-	assertContains(t, got.Terraform, `object_ownership = "ObjectWriter"`)
+	terraform := decodeTerraformBase64(t, got.TerraformBase64)
+	assertContains(t, terraform, `object_ownership = "ObjectWriter"`)
 }
 
 func TestRenderTerraformUsesConfiguredDefaultObjectOwnership(t *testing.T) {
@@ -126,7 +126,18 @@ func TestRenderTerraformUsesConfiguredDefaultObjectOwnership(t *testing.T) {
 	if err := json.NewDecoder(resp.Body).Decode(&got); err != nil {
 		t.Fatalf("decode response: %v", err)
 	}
-	assertContains(t, got.Terraform, `object_ownership = "ObjectWriter"`)
+	terraform := decodeTerraformBase64(t, got.TerraformBase64)
+	assertContains(t, terraform, `object_ownership = "ObjectWriter"`)
+}
+
+func decodeTerraformBase64(t *testing.T, value string) string {
+	t.Helper()
+
+	decoded, err := base64.StdEncoding.DecodeString(value)
+	if err != nil {
+		t.Fatalf("decode terraform_base64: %v", err)
+	}
+	return string(decoded)
 }
 
 func assertContains(t *testing.T, value, want string) {
