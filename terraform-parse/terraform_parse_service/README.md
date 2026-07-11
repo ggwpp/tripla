@@ -146,6 +146,6 @@ terraform destroy
 
 ## AI Assistant Usage
 
-I used an AI assistant as a development partner for this project. It help me to inital setup the project, writing the test-case.
+I used an AI assistant as a development partner for this project. It helped me with the initial project setup, generating test cases, reviewing implementation ideas, and identifying areas that required further validation.
 
 I reviewed the generated suggestions, made the final design decisions, and verified the implementation with the test suite.
