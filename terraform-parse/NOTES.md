@@ -51,5 +51,29 @@ Changes:
 - Configured the chart to ignore `backend.replicas` when HPA is enabled, avoiding conflicting configuration
 - Created a sample values file for production deployments
 
-- Part 4 (System Behavior): Share your thoughts on how this setup might behave under load or in failure scenarios, and what strategies could make it more resilient in the long term.
-- Part 5 (Approach & Tools): Outline the approach you took to complete the task, including any resources, tools, or methods that supported your work.
+# - Part 4 (System Behavior): Share your thoughts on how this setup might behave under load or in failure scenarios, and what strategies could make it more resilient in the long term.
+
+Since the backend application generates and returns the Terraform file directly to the client, it can be considered a stateless application. Therefore, running multiple replicas should not introduce dependency or state-consistency issues, and the system should be able to scale horizontally to handle higher traffic.
+
+However, its actual performance under load would still depend on factors such as CPU and memory usage, request size, file-generation time, and any limits imposed by downstream services. Load testing would help determine appropriate resource requests, limits, and autoscaling thresholds.
+
+For long-term improvements, the frontend could be moved to static-content hosting behind a CDN, such as Amazon CloudFront or Cloudflare. This could reduce infrastructure costs, improve response times, and provide caching at edge locations.
+
+For the backend, pods should be distributed across multiple worker nodes and Availability Zones. Pod anti-affinity or topology spread constraints could be used to avoid placing all replicas on the same node or in the same zone. This would improve availability if a physical host or an entire Availability Zone became unavailable.
+
+Additional resilience strategies could include:
+
+- Configuring a Horizontal Pod Autoscaler to scale based on CPU, memory, or request metrics
+- Adding graceful shutdown and request timeout handling
+- Implementing rate limiting to protect the service from excessive traffic
+- Adding monitoring, logging, and alerting for latency, error rate, and resource usage
+- Using a Pod Disruption Budget to maintain availability during planned maintenance
+
+# - Part 5 (Approach & Tools): Outline the approach you took to complete the task, including any resources, tools, or methods that supported your work.
+started by understanding the problem and identifying the expected outcome. From there, I designed a solution that best addressed the requirements and constraints of the task.
+
+I then implemented and tested the solution iteratively until it worked as expected. After completing the core functionality, I reviewed the implementation for further improvements in security, cost efficiency, reliability, maintainability, and performance.
+
+Official documentation was my primary source of information, as it helped me understand the intended behavior, recommended practices, and technical limitations of the tools involved. I also used local testing and validation tools to confirm that each part of the solution behaved correctly.
+
+In general, I also find technical meetups and conferences useful for learning about emerging technologies, new approaches, and practical implementation ideas that may not yet be widely covered in official documentation.
