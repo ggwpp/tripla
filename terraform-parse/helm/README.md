@@ -10,8 +10,8 @@ Test on minikube
 ```sh
 # Deploy to k8s
 minikube start
+# make sure in the `terraform-parse/helm` dir
 helm install terraform-parse .
-helm test terraform-parse
 
 # Backend Test
 kubectl port-forward svc/terraform-parse-backend 3000:3000

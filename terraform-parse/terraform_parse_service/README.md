@@ -30,7 +30,7 @@ The service listens on `:3000` by default.
 Example:
 
 ```sh
-PORT=8080 OUTPUT_DIR=/tmp/generated go run .
+go run .
 ```
 
 ## API
@@ -46,7 +46,7 @@ curl -X POST http://localhost:3000/terraform \
         "aws-region": "eu-west-1",
         "acl": "private",
         "bucket-name": "tripla-bucket",
-        "object-ownership": "BucketOwnerPreferred"
+        "object-ownership": "BucketOwnerPreferred" # Optional
       }
     }
   }'
@@ -95,12 +95,10 @@ curl -X POST http://localhost:3000/terraform \
   }' | jq -r .terraform_base64 | base64 -d > tripla-bucket-123sfs.tf
 ```
 
-On macOS, use `base64 -D` instead of `base64 -d` if your local `base64` command does not support `-d`.
-
 ## Test
 
 ```sh
-go test ./...
+go test .
 ```
 
 ## End-to-end Check
@@ -148,6 +146,6 @@ terraform destroy
 
 ## AI Assistant Usage
 
-I used an AI assistant as a development partner for this project. It helped compare the trade-offs between returning raw Terraform content and returning base64-encoded content, update the response shape to `terraform_base64`, revise tests to decode and verify the response, and polish this README.
+I used an AI assistant as a development partner for this project. It help me to inital setup the project, writing the test-case.
 
 I reviewed the generated suggestions, made the final design decisions, and verified the implementation with the test suite.

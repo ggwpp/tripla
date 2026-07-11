@@ -1,0 +1,19 @@
+frontend:
+  replicaCount: 3
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+
+backend:
+  image:
+    repository: ghcr.io/ggwpp/tripla/terraform-parse-service
+    tag: 874f258
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+
+hpa:
+  minReplicas: 3
+  maxReplicas: 12
