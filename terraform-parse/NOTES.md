@@ -70,7 +70,7 @@ Additional resilience strategies could include:
 - Using a Pod Disruption Budget to maintain availability during planned maintenance
 
 # - Part 5 (Approach & Tools): Outline the approach you took to complete the task, including any resources, tools, or methods that supported your work.
-started by understanding the problem and identifying the expected outcome. From there, I designed a solution that best addressed the requirements and constraints of the task.
+I started by understanding the problem and identifying the expected outcome. From there, I designed a solution that best addressed the requirements and constraints of the task.
 
 I then implemented and tested the solution iteratively until it worked as expected. After completing the core functionality, I reviewed the implementation for further improvements in security, cost efficiency, reliability, maintainability, and performance.
 
