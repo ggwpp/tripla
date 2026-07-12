@@ -18,10 +18,11 @@ frontend:
 backend:
   image:
     repository: ghcr.io/ggwpp/tripla/terraform-parse-service
-    tag: 5bd9e9d
+    tag: 874f258
     pullPolicy: IfNotPresent
   replicaCount: 1
-  env: []
+  env:
+    DEFAULT_OBJECT_OWNERSHIP: "BucketOwnerPreferred"
   containerPort: 3000
   service:
     type: ClusterIP
@@ -42,11 +43,3 @@ hpa:
   enabled: true
   minReplicas: 2
   maxReplicas: 3
-
-tests:
-  image:
-    repository: curlimages/curl
-    tag: "8.10.1"
-    pullPolicy: IfNotPresent
-  retries: 30
-  retryDelaySeconds: 2
