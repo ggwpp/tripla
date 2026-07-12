@@ -76,4 +76,12 @@ I then implemented and tested the solution iteratively until it worked as expect
 
 Official documentation was my primary source of information, as it helped me understand the intended behavior, recommended practices, and technical limitations of the tools involved. I also used local testing and validation tools to confirm that each part of the solution behaved correctly.
 
-In general, I also find technical meetups and conferences useful for learning about emerging technologies, new approaches, and practical implementation ideas that may not yet be widely covered in official documentation.
+Tools:
+- go
+- terraform
+- helm
+- awscli
+- kubectl
+- minikube
+- vscode
+- codex
