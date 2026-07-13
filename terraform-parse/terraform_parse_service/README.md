@@ -9,14 +9,21 @@ The API returns the generated Terraform as a base64 string so clients can decode
 Requirements:
 
 - Go
+- docker
 - `jq` and `base64` for the decode examples
-- Terraform and AWS credentials for the end-to-end check
+- Terraform and AWS credentials for the end-to-end testing
 
 ```sh
 go run .
 ```
 
-The service listens on `:3000` by default.
+## Build
+
+```sh
+docker build . -t terraform-parse-service
+
+# Automated build and push docker image to ghcr is available on github action.
+```
 
 ## Configuration
 
@@ -101,7 +108,7 @@ curl -X POST http://localhost:3000/terraform \
 go test .
 ```
 
-## End-to-end Check
+## End-to-end testing
 
 1. Start the server.
 

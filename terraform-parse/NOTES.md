@@ -77,11 +77,12 @@ I then implemented and tested the solution iteratively until it worked as expect
 Official documentation was my primary source of information, as it helped me understand the intended behavior, recommended practices, and technical limitations of the tools involved. I also used local testing and validation tools to confirm that each part of the solution behaved correctly.
 
 Tools:
-- go
-- terraform
-- helm
-- awscli
+- Go
+- Docker
+- Terraform
+- Helm
+- AWS CLI
 - kubectl
-- minikube
-- vscode
-- codex
+- Minikube
+- VScode
+- Codex
