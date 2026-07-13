@@ -1,4 +1,4 @@
-<div align="center">
+<!-- <div align="center">
    <img src="/img/logo.svg?raw=true" width=600 style="background-color:white;">
 </div>
 
@@ -46,4 +46,22 @@ Welcome to the Tripla SRE take-home assignment! 🧑‍💻 This exercise is des
 ## Minimum Deliverables
 1.  A link to your Git repository containing the complete solution.
 2.  Clear instructions in the `README.md` on how to build, test, and run your service.
-3. `NOTES.md` with explanations for API service creation, Terraform fixes, Helm fixes, multi-env thoughts, and any AI usage.
+3. `NOTES.md` with explanations for API service creation, Terraform fixes, Helm fixes, multi-env thoughts, and any AI usage. -->
+
+Instructions for building and testing are available in each task folder:
+
+- [terraform_parse_service](terraform_parse_service/README.md)
+- [terraform](terraform/README.md)
+- [helm](helm/README.md)
+
+[NOTES.md](NOTES.md) has also been updated with the relevant explanations.
+
+## Prerequisites
+
+- Go
+- Docker
+- Terraform
+- Helm
+- AWS CLI
+- kubectl
+- Minikube

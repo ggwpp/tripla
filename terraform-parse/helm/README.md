@@ -3,7 +3,7 @@
 Render the helm-chart
 ```sh
 # Render the template
-helm template terraform-parse .
+helm template terraform-parse . # with desired values file -f values-production.yaml
 ```
 
 Test on minikube
