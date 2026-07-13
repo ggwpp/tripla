@@ -53,7 +53,7 @@ curl -X POST http://localhost:3000/terraform \
         "aws-region": "eu-west-1",
         "acl": "private",
         "bucket-name": "tripla-bucket",
-        "object-ownership": "BucketOwnerPreferred" # Optional
+        "object-ownership": "BucketOwnerPreferred"
       }
     }
   }'
