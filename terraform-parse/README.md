@@ -48,11 +48,19 @@ Welcome to the Tripla SRE take-home assignment! 🧑‍💻 This exercise is des
 2.  Clear instructions in the `README.md` on how to build, test, and run your service.
 3. `NOTES.md` with explanations for API service creation, Terraform fixes, Helm fixes, multi-env thoughts, and any AI usage. -->
 
+# SRE Technical Take-Home Assignment : Terraform-Parse (Terraform + Helm)
+
+This repository contains three parts of the assignment:
+
+- A Go API that generates Terraform configuration
+- A reusable Terraform module for EKS and s3
+- A Helm chart for deploying the application
+
 Instructions for building and testing are available in each task folder:
 
-- [terraform_parse_service](terraform_parse_service/README.md)
-- [terraform](terraform/README.md)
-- [helm](helm/README.md)
+- [Terraform Parse Service](terraform_parse_service/README.md)
+- [Terraform](terraform/README.md)
+- [Helm](helm/README.md)
 
 [NOTES.md](NOTES.md) has also been updated with the relevant explanations.
 

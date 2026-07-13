@@ -79,10 +79,11 @@ Official documentation was my primary source of information, as it helped me und
 Tools:
 - Go
 - Docker
+- Github Actions
 - Terraform
 - Helm
 - AWS CLI
 - kubectl
 - Minikube
-- VScode
+- VS Code
 - Codex
